@@ -21,7 +21,7 @@ const addRouletteResult = (result, next) => {
 }
 const getIdOfGames = (result, next) => {
     return new Promise((resolve, reject)=> {
-    connection.query(`SELECT MAX(id) FROM rouletteResults`, [],
+    connection.query(`SELECT id FROM rouletteResults`, [],
         function (error, results) {
             if (error){
                 return reject(error);
@@ -37,13 +37,13 @@ const getIdOfGames = (result, next) => {
 class ResultService {
   async roulette(selectedNumber, next) {
       connection.connect();
-      const result = Math.floor(Math.random() * 37);
+      const result = Math.floor(Math.random() * 37 );
       const isAdd = await addRouletteResult(result, next);
       if (isAdd){
           const id = await getIdOfGames()
           return { result, id, isWin: +selectedNumber === +result };
       } else {
-          return { result: null, id: null, isWin: null }
+          return { result: null, id: null, isWin: null,  }
       }
   }
 }

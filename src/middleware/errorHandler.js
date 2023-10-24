@@ -3,7 +3,7 @@ import ErrorSerializer from '../serializers/ErrorSerializer.js';
 
 export const errorHandler = (error, req, res, next) => {
   if (!(error instanceof Error)) {
-    const serializer = new ErrorSerializer(error.errorsArray, errorId);
+    const serializer = new ErrorSerializer(error.errorsArray);
     res.send(serializer.serialize());
     console.log(error);
     next(error);

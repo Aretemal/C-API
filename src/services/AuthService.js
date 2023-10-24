@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
 import { generationAccessToken } from '../utils/generationAccessToken.js';
-import connection from '../../db.js';
+import connection, {orm} from '../../db.js';
 
 dotenv.config();
 const findUserByLogin = (login, next) => {
@@ -56,7 +56,7 @@ class AuthService {
     if (isUserCreated){
         const user = await findUserByLogin(login);
         const token = generationAccessToken(user.id);
-        return {token, id: user.id};
+        return {token, id: user.id, login};
     }
   }
 
@@ -67,8 +67,8 @@ class AuthService {
       next({ errorsArray: [{ msg: 'Login or password is incorrect' }] });
       return;
     }
-
-    console.log(user);
+    // const a = await orm.findAll({ login }, next)
+    // console.log(a);
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
       next({ errorsArray: [{ msg: 'Login or password is incorrect' }] });

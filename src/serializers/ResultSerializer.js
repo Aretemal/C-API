@@ -8,7 +8,7 @@ class ResultSerializer extends Serializer {
   attributes() {
     return {
       result: this.resource.result,
-      isWin: this.resource.isWin
+      isWin: this.resource.isWin,
     };
   }
 
