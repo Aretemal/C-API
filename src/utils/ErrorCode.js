@@ -64,6 +64,7 @@ class ErrorCode {
         case '439':
         case '440':
         case '441':
+        case '445':
           return 'Service Error';
         default:
           return null;

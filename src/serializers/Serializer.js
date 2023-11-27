@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 class Serializer {
-  constructor(resource, options = {}) {
+  constructor(resource = {}, options = {}) {
     this.resource = resource;
     this.options = options;
   }

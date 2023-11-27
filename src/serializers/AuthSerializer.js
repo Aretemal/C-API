@@ -9,11 +9,12 @@ class AuthSerializer extends Serializer {
     return {
       token: this.resource.token,
       login: this.resource.login,
+      role: this.resource.role,
     };
   }
 
   links() {
-    return { self: `${process.env.API_URL}${this.options.url || 'auth'}` };
+    return { self: `http://localhost:5000/api/${this.options.url || 'auth'}` };
   }
 }
 export default AuthSerializer;

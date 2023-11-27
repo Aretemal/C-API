@@ -7,13 +7,16 @@ class ResultSerializer extends Serializer {
 
   attributes() {
     return {
+      amount: this.resource.amount,
+      game: this.resource.game,
+      selected: this.resource.selected,
       result: this.resource.result,
-      isWin: this.resource.isWin,
+      created: this.resource?.created_at,
     };
   }
 
   links() {
-    return { self: `${process.env.API_URL}result/${this.options.url}` };
+    return { self: `http://localhost:5000/api/result/${this.options.url}` };
   }
 }
 export default ResultSerializer;

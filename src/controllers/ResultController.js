@@ -3,8 +3,12 @@ import ResultService from "../services/ResultService.js";
 
 class ResultController {
   async roulette(req, res, next) {
-    const { result, id, isWin } = await ResultService.roulette(req.body.selectedNumber);
-    req.serializer = new ResultSerializer({ result, isWin, id }, { url: 'roulette'});
+    const result = await ResultService.roulette(
+        {
+        ...req.body,
+        userId: req.user.id,
+    });
+    req.serializer = new ResultSerializer(result, { url: 'roulette'});
     next();
   }
 }

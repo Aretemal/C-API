@@ -10,7 +10,7 @@ class AuthController {
 
   async login(req, res, next) {
     const data = await AuthService.login(req.body, next);
-    req.serializer = new AuthSerializer(data, { url: 'registration'});
+    req.serializer = new AuthSerializer(data, { url: 'login'});
     next();
   }
 }

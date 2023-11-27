@@ -14,5 +14,5 @@ app.use('/api', router);
 app.use(responseJSON);
 app.use(errorHandler);
 
-const PORT = process.env.APP_PORT;
+const PORT = process.env.APP_PORT || 5000;
 app.listen(PORT, () => console.log(`Server created on port: ${PORT}`));

@@ -9,36 +9,14 @@ const connection = await mysql.createConnection({
     database : 'database_casino_dev',
     port: '3306'
 });
-
-class ORM {
-    constructor(props) {
-        connection.connect();
-    }
-    async findAll(params, next) {
-        try {
-            let str = 'SELECT * FROM users where ';
-            const arrParams = Object.entries(params);
-            arrParams.forEach(([key, value], index) => {
-                if (index === arrParams.length) {
-                    str += `${key}=${value}`;
-                    return;
-                }
-                str += `${key}=${value} AND `
-            })
-            await connection.query(str, (error, results) => {
-                if (error) {
-                    console.log(error);
-                    next({errorsArray: [{ msg: 'Error in DB' }]});
-                }
-                return results;
-            });
-        } catch (error) {
-            console.log(error);
-            next({errorsArray: [{ msg: 'Error in DB' }]});
-        }
-    }
-
-}
-export const orm = new ORM();
-// export default new ORM();
-export default connection;
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    port: '3306',
+    database: 'database_casino_dev',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+})
+export default pool;

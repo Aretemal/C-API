@@ -2,17 +2,20 @@ import Serializer from './Serializer.js';
 
 class PaymentsSerializer extends Serializer {
   type() {
-    return 'Result';
+    return 'Balance';
   }
 
   attributes() {
     return {
       balance: this.resource.balance,
+      amount: this.resource?.amount,
+      created: this.resource?.created_at,
+      newBalance: this.resource?.newBalance,
     };
   }
 
   links() {
-    return { self: `${process.env.API_URL}balance/${this.options.url || ''}` };
+    return { self: `http://localhost:5000/api/balance/${this.options.url || ''}` };
   }
 }
 export default PaymentsSerializer;

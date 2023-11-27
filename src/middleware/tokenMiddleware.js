@@ -6,7 +6,7 @@ export const tokenMiddleware = (req, res, next) => {
     if (!token) {
       return res.status(403).json({ message: 'Пользователь не авторизован' });
     }
-    const decodedData = jwt.verify(token, process.env.SECRET_KEY_RANDOM);
+    const decodedData = jwt.verify(token, 'SECRET_KEY_RANDOM');
     req.user = decodedData;
   }
   next();

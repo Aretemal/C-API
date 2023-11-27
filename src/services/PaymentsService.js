@@ -1,78 +1,35 @@
-import connection from '../../db.js';
+import ORM from '../../orm.js';
 
-const updateCasinoBalance = ({ amount }, next) => {
-    return new Promise((resolve, reject)=>{
-        connection.query('Update casinoBalance Set balance = balance + ? where id=1', [amount],
-            (error, results)=> {
-            if (error){
-                return reject(error);
-            }
-            resolve(true);
-        });
-    }).catch((error) => {
-        console.log(error);
-        next({errorsArray: [{ msg: 'Error in DB' }]});
-    });
-}
-const updateUserBalance = ({ amount, userId}, next) => {
-    return new Promise((resolve, reject)=>{
-        connection.query('Update users Set balance = balance + ? where id=?', [amount, userId],
-            (error, results)=> {
-            if (error){
-                return reject(error);
-            }
-            resolve(true);
-        });
-    }).catch((error) => {
-        console.log(error);
-        next({errorsArray: [{ msg: 'Error in DB' }]});
-    });
-}
-const updateUserAmount = ({ amount, userId }, next) => {
-    return new Promise((resolve, reject)=>{
-        connection.query(`insert into payments(amount, userId) values (?, ?)`, [amount, userId],
-            (error, results)=> {
-            if (error){
-                return reject(error);
-            }
-            resolve(true);
-        });
-    }).catch((error) => {
-        console.log(error);
-        next({errorsArray: [{ msg: 'Error in DB' }]});
-    });
-}
-const getUserBalance = ({ userId }, next) => {
-    return new Promise((resolve, reject)=>{
-        connection.query(`select balance from users where id=?`, [userId],
-            (error, results)=> {
-                if (error){
-                    return reject(error);
-                }
-                resolve(results[0].balance);
-            });
-    }).catch((error) => {
-        console.log(error);
-        next({errorsArray: [{ msg: 'Error in DB' }]});
-    });
-}
 class PaymentsService {
     async updateBalance({ userId, amount }, next) {
-        let balance;
-        const isUpdatedUserBalance = await updateUserAmount( { userId, amount }, next);
-        if (isUpdatedUserBalance) {
-            const isUpdatedCasinoBalance = await updateCasinoBalance( { amount }, next);
-            await updateUserBalance({ userId, amount }, next)
-            if (isUpdatedCasinoBalance) {
-                balance =  await getUserBalance({ userId }, next);
-            }
-        }
+        const [ { balance: oldBalance } ] =  await ORM.findAll(
+            { id: userId },
+            { table: 'users'},
+            next);
+        const updatedUser = await ORM.update(
+            { balance: +oldBalance + +amount },
+            { table: 'users', where: { id: userId } },
+            next);
+        const [ { balance } ] =  await ORM.findAll(
+            { id: userId },
+            { table: 'users'},
+            next);
+        const createdPayment = await ORM.create(
+            { userId, amount, newBalance: balance },
+            { table: 'payments' },
+            next)
         return { id: userId, balance };
     }
 
     async getBalance({ userId }, next) {
-        let balance = await getUserBalance({ userId }, next);
+        let [ { balance }] = await ORM.findAll({ id: userId },
+            { table: 'users'},  next);
         return { id: userId, balance };
+    }
+
+    async getHistoryOfPayments({ userId }, next) {
+        const payments = await ORM.findAll( { userId }, { table: 'payments' }, next);
+        return payments;
     }
 }
 
